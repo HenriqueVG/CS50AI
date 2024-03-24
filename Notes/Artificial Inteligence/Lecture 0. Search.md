@@ -42,7 +42,7 @@ Finding a solution to a 15 puzzle would require the use of a search algorithm.
 	- **Optimal Solution**
         A solution that has the lowest [[#^444e3b|path cost]] among all solutions.
 
-In a search process, data is often stored in a **_node_**, a data structure that contains the following data:
+In a search process, data is often stored in a <mark style="background: #FFB86CA6;">node, a data structure</mark> that contains the following data:
 - A _[[#^8f6117|state]]_
 - Its _parent node_, through which the current node was generated
 - The _[[#^fb9f0a|action]]_ that was applied to the state of the parent to get to the current node
@@ -63,8 +63,14 @@ Else:
 	- Add the current node to the explored set.
 ```
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=1184&amp;end=1327" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## [[Depth-First Search]]
-In the previous description of the _frontier_, one thing went unmentioned. At stage 1 in the pseudocode above, which node should be removed? This choice has implications on the quality of the solution and how fast it is achieved. There are multiple ways to go about the question of which nodes should be considered first, two of which can be represented by the data structures of **stack** (in _depth-first_ search) and **queue** (in _breadth-first search_; and [here is a cute cartoon demonstration](https://www.youtube.com/watch?v=2wM6_PuBIxY) (of the difference between the two).
+
+>[!Definition]
+> Last-in first-out data type
+
+In the previous description of the _frontier_, one thing went unmentioned. At stage 1 in the pseudocode above, which node should be removed? This choice has implications on the quality of the solution and how fast it is achieved. There are multiple ways to go about the question of which nodes should be considered first, two of which can be represented by the data structures of <mark style="background: #FFB86CA6;">stack (in depth-first search)</mark> and <mark style="background: #FFB86CA6;">queue(in breadth-first search)</mark>; and [here is a cute cartoon demonstration](https://www.youtube.com/watch?v=2wM6_PuBIxY) (of the difference between the two).
 
 We start with the _depth-first_ search (_DFS_) approach.
 
@@ -94,7 +100,13 @@ def remove(self):
 		return node
 ```
 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=1561&amp;end=6570" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## [[Breadth-First Search]]
+
+>[!Definition]
+> Search algorithm that always expands the shallowest node in the frontier
 
 The opposite of _depth-first_ search would be _breadth-first_ search (_BFS_).
 
@@ -123,4 +135,47 @@ Code Example:
             self.frontier = self.frontier[1:]
             return node
 ```
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=1710&amp;end=6569" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## [[Greedy Best-First Search]]
+
+>[!Definition]
+> Search algorithm that expands the node that is closest to the goal, as estimated by a heuristic function $h(n)$
+
+[[Breadth-First Search|Breadth-First]] and [[Depth-First Search|depth-first]] are both [[Uninformed Search Algorithms|uninformed search algorithms]]. That is, <mark style="background: #FF5582A6;">these algorithms do not utilize any knowledge about the problem that they did not acquire through their own exploration</mark>. However, most often is the case that some knowledge about the problem is, in fact, available. For example, when a human maze-solver enters a junction, the human can see which way goes in the general direction of the solution and which way does not. AI can do the same. A t<mark style="background: #FF5582A6;">ype of algorithm that considers additional knowledge to try to improve its performance</mark> is called an [[Informed Search Algorithm|informed search algorithm]].
+
+**Greedy best-first** search expands the node that is the closest to the goal, as determined by a [[Heuristic Function|heuristic function]] _h(n)_. As its name suggests, the function estimates how close to the goal the next node is, but it can be mistaken. <mark style="background: #FF5582A6;">The efficiency of the _greedy best-first_ algorithm depends on how good the heuristic function is</mark>. For example, in a maze, an algorithm can use a heuristic function that relies on the [[Manhattan distance]] between the possible nodes and the end of the maze. 
+
+>[!Manhattan Distance]
+>The _Manhattan distance_ ignores walls and counts how many steps up, down, or to the sides it would take to get from one location to the goal location. This is an easy estimation that can be derived based on the (x, y) coordinates of the current location and the goal location.
+
+>[!Heuristic Function]
+>A heuristic function is **an algorithm used in artificial intelligence to find a quicker or more approximate solution to a problem when there are no exact solutions or the time required to find one is too long**. It is an evaluation function used to estimate the cost or potential of reaching a goal state from a given state in a problem-solving domain. 
+>Heuristic functions vary depending on the problem and must be tailored to match that particular challenge. They are essential concepts in the field of artificial intelligence, particularly in the context of problem-solving and optimization, and are often used in various AI applications, including game playing, route planning, and decision-making.
+
+![[ManhattanDistance.png]]
+
+However, it is important to emphasize that, as with any heuristic, it can go wrong and lead the algorithm down a slower path than it would have gone otherwise. <mark style="background: #FF5582A6;">It is possible that an uninformed search algorithm will provide a better solution faster, but it is less likely to do so than an informed algorithm.</mark>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=3276&amp;end=6569" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## [[A* Search]]
+
+> [!Definition]
+>  Search algorithm that expands node with lowest value of $g(n) + f(n)$
+>  
+>$g(n)=$ cost to reach node
+>$f(n)=$ estimated cost to goal
+
+A development of the [[Greedy Best-First Search|greedy best-first]] algorithm, _A* search_ considers not only $h(n)$, the estimated cost from the current location to the goal, but also $g(n)$, the cost that was accrued until the current location. <mark style="background: #FF5582A6;">By combining both these values, the algorithm has a more accurate way of determining the cost of the solution and optimizing its choices on the go.</mark> The algorithm keeps track of (_cost of path until now_ + _estimated cost to the goal_), and once it exceeds the estimated cost of some previous option, the algorithm will ditch the current path and go back to the previous option, thus preventing itself from going down a long, inefficient path that $h(n)$ erroneously marked as best.
+
+Yet again, since this algorithm, too, relies on a heuristic, it is as good as the heuristic that it employs. It is possible that in some situations it will be less efficient than _greedy best-first_ search or even the _uninformed_ algorithms. For _A* search_ to be optimal, the heuristic function, $h(n)$, should be:
+
+1. _Admissible_, or never _overestimating_ the true cost, and
+2. _Consistent_, which means that the estimated path cost to the goal of a new node in addition to the cost of transitioning to it from the previous node is greater or equal to the estimated path cost to the goal of the previous node. To put it in an equation form, _h(n)_ is consistent if for every node _n_ and successor node _n’_ with step cost  $c, h(n) ≤ h(n’) + c$.
+
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=3920&amp;end=6570" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
