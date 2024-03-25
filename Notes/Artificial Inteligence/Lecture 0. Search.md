@@ -179,3 +179,88 @@ Yet again, since this algorithm, too, relies on a heuristic, it is as good as th
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=3920&amp;end=6570" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+## [[Adversarial Search]]
+
+Whereas, previously, we have discussed algorithms that need to find an answer to a question, in **adversarial search** the algorithm faces an opponent that tries to achieve the opposite goal. Often, AI that uses adversarial search is encountered in games, such as tic tac toe.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=4325&amp;end=6569" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### Minimax
+A type of algorithm in adversarial search, **Minimax** represents winning conditions as (-1) for one side and (+1) for the other side. Further actions will be driven by these conditions, with the minimizing side trying to get the lowest score, and the maximizer trying to get the highest score.
+
+>[!Example:]
+>**Representing a Tic-Tac-Toe AI**:
+>	- _S₀_: Initial state (in our case, an empty 3X3 board)
+>	- _Players(s)_: a function that, given a state _s_, returns which player’s turn it is (X or O).
+>	- _Actions(s)_: a function that, given a state _s_, return all the legal moves in this state (what spots are free on the board).
+>	- _Result(s, a)_: a function that, given a state _s_ and action _a_, returns a new state. This is the board that resulted from performing the action _a_ on state _s_ (making a move in the game).
+>	- _Terminal(s)_: a function that, given a state _s_, checks whether this is the last step in the game, i.e. if someone won or there is a tie. Returns _True_ if the game has ended, _False_ otherwise.
+>	- _Utility(s)_: a function that, given a terminal state _s_, returns the utility value of the state: -1, 0, or 1.
+>
+
+**How the algorithm works**:
+
+Recursively, the algorithm simulates all possible games that can take place beginning at the current state and until a terminal state is reached. Each terminal state is valued as either (-1), 0, or (+1).
+
+![[TicTacToeMinmax.png]]
+
+<mark style="background: #FF5582A6;">Knowing based on the state whose turn it is, the algorithm can know whether the current player, when playing optimally, will pick the action that leads to a state with a lower or a higher value. </mark>This way, alternating between minimizing and maximizing, the algorithm creates values for the state that would result from each possible action. To give a more concrete example, we can imagine that the maximizing player asks at every turn: “if I take this action, a new state will result. If the minimizing player plays optimally, what action can that player take to bring to the lowest value?” However, to answer this question, the maximizing player has to ask: “To know what the minimizing player will do, I need to simulate the same process in the minimizer’s mind: the minimizing player will try to ask: ‘if I take this action, what action can the maximizing player take to bring to the highest value?’” This is a recursive process, and it could be hard to wrap your head around it; looking at the pseudo code below can help. Eventually, through this recursive reasoning process, the maximizing player generates values for each state that could result from all the possible actions at the current state. After having these values, the maximizing player chooses the highest one.
+
+![[MaximizerFutureStates.png]]
+
+To put it in pseudocode, the Minimax algorithm works the following way:
+
+- Given a state _s_
+    - The maximizing player picks action _a_ in _Actions(s)_ that produces the highest value of _Min-Value(Result(s, a))_.
+    - The minimizing player picks action _a_ in _Actions(s)_ that produces the lowest value of _Max-Value(Result(s, a))_.
+- Function _Max-Value(state)_
+    
+    - _v = -∞_
+        
+    - if _Terminal(state)_:
+        
+        ​ return _Utility(state)_
+        
+    - for _action_ in _Actions(state)_:
+        
+        ​ _v = Max(v, Min-Value(Result(state, action)))_
+        
+        return _v_
+        
+- Function _Min-Value(state)_:
+    
+    - _v = ∞_
+        
+    - if _Terminal(state)_:
+        
+        ​ return _Utility(state)_
+        
+    - for _action_ in _Actions(state)_:
+        
+        ​ _v = Min(v, Max-Value(Result(state, action)))_
+        
+        return _v_
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=4458&amp;end=6569" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+### Alpha-Beta Pruning
+
+A way to optimize _Minimax_, **Alpha-Beta Pruning** skips some of the recursive computations that are decidedly unfavorable. After establishing the value of one action, if there is initial evidence that the following action can bring the opponent to get to a better score than the already established action, there is no need to further investigate this action because it will decidedly be less favorable than the previously established one.
+
+This is most easily shown with an example: a maximizing player knows that, at the next step, the minimizing player will try to achieve the lowest score. Suppose the maximizing player has three possible actions, and the first one is valued at 4. Then the player starts generating the value for the next action. To do this, the player generates the values of the minimizer’s actions if the current player makes this action, knowing that the minimizer will choose the lowest one. However, before finishing the computation for all the possible actions of the minimizer, the player sees that one of the options has a value of three. This means that there is no reason to keep on exploring the other possible actions for the minimizing player. The value of the not-yet-valued action doesn’t matter, be it 10 or (-10). If the value is 10, the minimizer will choose the lowest option, 3, which is already worse than the preestablished 4. If the not-yet-valued action would turn out to be (-10), the minimizer will this option, (-10), which is even more unfavorable to the maximizer. Therefore, computing additional possible actions for the minimizer at this point is irrelevant to the maximizer, because the maximizing player already has an unequivocally better choice whose value is 4.
+
+![[AlphaBetaPruning.png]]
+
+
+  
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=5786&amp;end=6569" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+### Depth-Limited Minimax
+There is a total of 255,168 possible Tic Tac Toe games, and 10²⁹⁰⁰⁰ possible games in Chess. The minimax algorithm, as presented so far, requires generating all hypothetical games from a certain point to the terminal condition. While computing all the Tic-Tac-Toe games doesn’t pose a challenge for a modern computer, doing so with chess is currently impossible.
+
+**Depth-limited Minimax** considers only a pre-defined number of moves before it stops, without ever getting to a terminal state. However, this doesn’t allow for getting a precise value for each action, since the end of the hypothetical games has not been reached. To deal with this problem, _Depth-limited Minimax_ relies on an **evaluation function** that estimates the expected utility of the game from a given state, or, in other words, assigns values to states. For example, in a chess game, a utility function would take as input a current configuration of the board, try to assess its expected utility (based on what pieces each player has and their locations on the board), and then return a positive or a negative value that represents how favorable the board is for one player versus the other. These values can be used to decide on the right action, and the better the evaluation function, the better the Minimax algorithm that relies on it.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WbzNRTTrX0g?start=6328&amp;end=6570" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+

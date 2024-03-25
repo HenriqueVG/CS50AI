@@ -11,17 +11,17 @@
             "id": "26c2f81f3a2734c5",
             "type": "leaf",
             "pane-relief:history-v1": {
-              "pos": 1,
+              "pos": 0,
               "stack": [
-                {
-                  "title": "Graph view",
-                  "icon": "lucide-git-fork",
-                  "state": "{\"type\":\"graph\",\"state\":{}}",
-                  "eState": "{}"
-                },
                 {
                   "state": "{}",
                   "eState": "{}"
+                },
+                {
+                  "title": "Lecture 0. Search",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"Lecture 0. Search.md\",\"mode\":\"source\",\"source\":false}}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":202,\"ch\":36},\"to\":{\"line\":202,\"ch\":36}},\"scroll\":194.2423255990007}"
                 }
               ]
             },
@@ -244,9 +244,13 @@
       "media-extended:Open media": false
     }
   },
-  "active": "26c2f81f3a2734c5",
+  "active": "32c6bd9a2c71cbc0",
   "lastOpenFiles": [
+    "worten.md",
     "Lecture 0. Search.md",
+    "Img/AlphaBetaPruning.png",
+    "Img/MaximizerFutureStates.png",
+    "Img/TicTacToeMinmax.png",
     "Img/ManhattanDistance.png",
     "Pasted image 20240324215039.png",
     "Img/15PuzzleState.png",
