@@ -5,7 +5,7 @@ class Node():
         self.action = action
 
 
-class StackFrontier():
+class StackFrontier(): #Depth-First Search
     def __init__(self):
         self.frontier = []
 
@@ -27,7 +27,7 @@ class StackFrontier():
             return node
 
 
-class QueueFrontier(StackFrontier):
+class QueueFrontier(StackFrontier): # Breadth-First Search
 
     def remove(self):
         if self.empty():
